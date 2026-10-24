@@ -32,6 +32,10 @@ public class Main {
         planner.setStrategy(new BalancedRouteStrategy(0.4, 0.3, 0.1, 0.2));
         printDecision(planner.planWithExplanation(routes, request));
 
+        planner.setStrategy(new ShortestRouteStrategy());
+        printDecision(planner.planWithExplanation(routes, request));
+
+
         System.out.println("\n=== AUTOMATIC STRATEGY SELECTION ===");
 
         StrategySelector selector = new StrategySelector();
@@ -44,10 +48,14 @@ public class Main {
         );
 
         for (DeliveryRequest delivery : requests) {
+
             planner.setStrategy(selector.selectStrategy(delivery));
+
             System.out.println("\nPriority: " + delivery.priority());
+
             printDecision(planner.planWithExplanation(routes, delivery));
         }
+
 
         System.out.println("\n=== STRATEGY COMPARISON ===");
 
@@ -55,7 +63,8 @@ public class Main {
                 new FastestRouteStrategy(),
                 new CheapestRouteStrategy(),
                 new EcoFriendlyRouteStrategy(),
-                new BalancedRouteStrategy(0.4, 0.3, 0.1, 0.2)
+                new BalancedRouteStrategy(0.4, 0.3, 0.1, 0.2),
+                new ShortestRouteStrategy()
         );
 
         RouteComparisonService comparison = new RouteComparisonService();
@@ -67,6 +76,7 @@ public class Main {
     }
 
     private static void printDecision(RouteDecision decision) {
+
         System.out.println("\nStrategy: " + decision.strategyName());
         System.out.println("Selected: " + decision.route().id());
         System.out.println("Reason: " + decision.explanation());
